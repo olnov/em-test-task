@@ -1,0 +1,41 @@
+networks:
+  app-node-network:
+    driver: bridge
+
+services:
+
+  pg:
+    container_name: postgres
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASS}"
+      PGPORT: ${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ./_data/pg/data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-node-network
+
+  app-node:
+    build: .
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - pg
+    networks:
+      - app-node-network
