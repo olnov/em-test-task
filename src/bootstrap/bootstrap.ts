@@ -1,6 +1,6 @@
 import { App } from '@/app';
-import { DB } from '@/config/db';
-import logger from '@/config/logger';
+import { DB } from '@config/db';
+import logger from '@config/logger';
 
 export class Bootstrap {
   private readonly app: App;

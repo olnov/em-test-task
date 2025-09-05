@@ -27,15 +27,3 @@ services:
       start_period: 10s
     networks:
       - app-node-network
-
-  app-node:
-    build: .
-    restart: always
-    ports:
-      - ${PORT}:${PORT}
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-    depends_on:
-      - pg
-    networks:
-      - app-node-network

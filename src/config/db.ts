@@ -69,6 +69,14 @@ export class DB {
     }
   }
 
+  public getConnection() {
+    if(!this.db) {
+      logger.error('Database not connected. Call connect() first.');
+      throw new Error('Database not connected. Call connect() first.');
+    }
+    return this.db;
+  }
+
   public async disconnect(): Promise<void> {
     try {
       if (this.pool) {
@@ -92,7 +100,7 @@ export class DB {
       }
       
       const client = await this.pool.connect();
-      const result = await client.query('SELECT 1');
+      const result = await client.query('SELECT 1 as health_check');
       client.release();
       
       return result.rows[0]?.health_check === 1;

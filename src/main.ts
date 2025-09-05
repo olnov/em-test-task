@@ -1,4 +1,4 @@
-import { App } from './app';
+import { App } from '@/app';
 import { DB } from '@config/db';
 import { GlobalHandlers } from '@core/global-handlers';
 import { Bootstrap } from '@bootstrap/bootstrap';

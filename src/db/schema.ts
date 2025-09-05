@@ -28,3 +28,6 @@ export const usersTable = pgTable("users", {
     index('users_email_idx').on(table.email),
     index('users_user_role_idx').on(table.userRole),
 ]);
+
+export type User = typeof usersTable.$inferSelect;
+export type NewUser = typeof usersTable.$inferInsert;

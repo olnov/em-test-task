@@ -14,7 +14,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@bootstrap/*": ["src/bootstrap/*"],
       "@db/*": ["src/db/*"],
+      "@core/*": ["src/core/*"],
       "@dtos/*": ["src/dtos/*"],
       "@config/*": ["src/config/*"],
       "@controllers/*": ["src/controllers/*"],

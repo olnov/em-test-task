@@ -50,25 +50,23 @@ export class App {
     this.app.use(
       cors({
         origin: allowedOrigins,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       }),
     );
 
     // HTTP Logging middleware
     this.app.use(
-      morgan('combined', {
+      morgan('tiny', {
         stream: {
           write: (message) => logger.info(message.trim()),
         },
       }),
     );
+
     // Body parsing
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-
-    // Static assets
-    this.app.use(express.static('public'));
   }
 
   // API Routes
