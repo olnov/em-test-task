@@ -1,11 +1,16 @@
 import { Router } from 'express';
 import { RegistrationController } from '@controllers/registration.controller';
 
-const router = Router();
+export const initRegistrationRouter = (
+  controller: RegistrationController,
+): Router => {
+  const router = Router();
 
-router.post('/', (req, res) => {
-  const registrationController = new RegistrationController();
-  return registrationController.registerUser(req, res);
-});
+  router.post(
+    '/',
+    (req, res) => controller.registerUser(req, res),
+    // #swagger.tags = ['Registration']
+  );
 
-export default router;
+  return router;
+};

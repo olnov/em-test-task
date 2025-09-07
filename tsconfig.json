@@ -21,7 +21,7 @@
       "@config/*": ["src/config/*"],
       "@controllers/*": ["src/controllers/*"],
       "@services/*": ["src/services/*"],
-      "@repo/*": ["src/repositories/*"],
+      "@repositories/*": ["src/repositories/*"],
       "@routes/*": ["src/routes/*"],
       "@models/*": ["src/models/*"],
       "@types/*": ["src/@types/*"],

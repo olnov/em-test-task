@@ -1,79 +1,86 @@
 import express, { Application } from 'express';
-
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import logger from '@config/logger';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-// import exampleRouter from '@routes/example.route';
 import 'dotenv/config';
 import http, { Server } from 'http';
-import registrationRouter from '@routes/registration.route';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from '@scripts/swagger-output.json';
+
+import { initRegistrationRouter } from '@routes/registration.route';
+import { initUserRouter } from '@routes/user.route';
+import type { RegistrationController } from '@controllers/registration.controller';
+import type { UserController } from '@controllers/user.controller';
 
 export class App {
   public app: Application;
   private server: Server | null = null;
-  private readonly RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes time window
-  private readonly RATE_LIMIT_MAX_REQUESTS = 100 // max 100 connection from one IP in time window
+  private readonly RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+  private readonly RATE_LIMIT_MAX_REQUESTS = 100;
 
   constructor() {
     this.app = express();
     this.initialiseMiddlewares();
-    this.initialiseRoutes();
   }
 
-  // Security headers
   private initialiseMiddlewares() {
     this.app.use(
       helmet({
-        noSniff: true, // Block MIME type sniffing
-        xssFilter: true, // Enable XSS protection
-        contentSecurityPolicy: false, // Should be configured at the proxy level
-        hsts: false, // Should be configured at the proxy level
-        hidePoweredBy: true, // Hide the "X-Powered-By" header
+        noSniff: true,
+        contentSecurityPolicy: false,
+        hsts: false,
+        hidePoweredBy: true,
       }),
     );
-
-    // Rate limiting
     this.app.use(
       rateLimit({
         windowMs: this.RATE_LIMIT_WINDOW_MS,
-        max: this.RATE_LIMIT_MAX_REQUESTS
+        max: this.RATE_LIMIT_MAX_REQUESTS,
       }),
     );
-
-    // CORS configuration
-    const allowedOrigins = process.env.CLIENT_ORIGINS
-      ? process.env.CLIENT_ORIGINS.split(',')
-      : ['http://localhost:3000'];
-
+    const allowedOrigins = process.env.CLIENT_ORIGINS?.split(',') ?? [
+      'http://localhost:3000',
+    ];
     this.app.use(
       cors({
         origin: allowedOrigins,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       }),
     );
-
-    // HTTP Logging middleware
     this.app.use(
-      morgan('tiny', {
-        stream: {
-          write: (message) => logger.info(message.trim()),
-        },
-      }),
+      morgan('tiny', { stream: { write: (m) => logger.info(m.trim()) } }),
     );
-
-    // Body parsing
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
   }
 
-  // API Routes
-  private initialiseRoutes() {
-    // this.app.use('/api/example', exampleRouter);
-    this.app.use('/api/v1/register', registrationRouter);
+  public init(controllers: {
+    registration: RegistrationController;
+    user: UserController;
+  }) {
+    this.app.use(
+      '/api/v1/register',
+      initRegistrationRouter(controllers.registration),
+      // #swagger.tags = ['Registration']
+    );
+    this.app.use(
+      '/api/v1/users',
+      initUserRouter(controllers.user),
+      // #swagger.tags = ['Users']
+    );
+
+    if (process.env.NODE_ENV === 'development') {
+      this.app.use(
+        '/api/v1/docs',
+        swaggerUi.serve,
+        swaggerUi.setup(swaggerSpec),
+      );
+      logger.info('Swagger UI is enabled at /api/v1/docs');
+    }
   }
 
   public listen(port: number, callback?: () => void): void {

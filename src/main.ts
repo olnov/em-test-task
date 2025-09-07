@@ -12,10 +12,8 @@ const db = DB.getInstance();
 const bootstrap = new Bootstrap(server, db);
 const globalHandlers = new GlobalHandlers();
 
-// Setting up global handlers
 globalHandlers.setup();
 
-// Graceful shutdown handler
 const shutdown = () => {
   logger.info('Received shutdown signal, shutting down gracefully...', {
     module: 'main',
@@ -27,5 +25,4 @@ process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 process.on('SIGQUIT', shutdown);
 
-// Start the application
 bootstrap.start(PORT, NODE_ENV);
