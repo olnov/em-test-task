@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",

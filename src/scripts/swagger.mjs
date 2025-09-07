@@ -9,6 +9,7 @@ const swaggerAutogen = swaggerAutogenFactory({
   autoQuery: true,
   autoResponse: true,
   autoPath: true,
+  autoBody: true,
 });
 
 const doc = {
@@ -31,11 +32,9 @@ const doc = {
 };
 
 const outputFile = './swagger-output.json';
-// const routes = [
-//   '../routes/registration.route.ts',
-//   '../routes/user.route.ts',
-// ];
-const routes = ['../app.ts'];
+const routes = [
+  '../swagger-setup.ts',
+];
 
 swaggerAutogen(outputFile, routes, doc);
 

@@ -10,7 +10,481 @@
       "url": "http://localhost:3000"
     }
   ],
-  "paths": {},
+  "paths": {
+    "/api/v1/register/": {
+      "post": {
+        "tags": [
+          "Registration"
+        ],
+        "summary": "User registration",
+        "description": "Registers new users in the system",
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "example": {
+                  "newUser": {
+                    "id": "507f1f77bcf86cd799439011",
+                    "firstName": "John",
+                    "middleName": "Michael",
+                    "lastName": "Doe",
+                    "dateOfBirth": "27.10.1995",
+                    "email": "john.doe@example.com",
+                    "userRole": "user",
+                    "createdAt": "2024-01-15T10:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Invalid payload",
+                  "issues": [
+                    {
+                      "code": "invalid_type",
+                      "expected": "string",
+                      "received": "undefined",
+                      "path": [
+                        "firstName"
+                      ],
+                      "message": "Required"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "middleName": {
+                    "type": "string",
+                    "example": "Michael"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Doe"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "27.10.1995"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "SecurePassword123!"
+                  },
+                  "userRole": {
+                    "type": "string",
+                    "example": "user"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "dateOfBirth",
+                  "email",
+                  "password",
+                  "userRole"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List users",
+        "description": "Return all users (without passwords).",
+        "responses": {
+          "200": {
+            "description": "Users returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "middleName": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "dateOfBirth": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "userRole": {
+                            "type": "string"
+                          },
+                          "isActive": {
+                            "type": "boolean"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "firstName",
+                          "lastName",
+                          "dateOfBirth",
+                          "email",
+                          "userRole",
+                          "isActive",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "users"
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "users": [
+                        {
+                          "id": "3f2a9a88-0b0c-4a43-8a6f-2e69b1a0a3f2",
+                          "firstName": "Alex",
+                          "middleName": null,
+                          "lastName": "Smith",
+                          "dateOfBirth": "1992-04-15T00:00:00.000Z",
+                          "email": "alex.smith@example.com",
+                          "userRole": "user",
+                          "isActive": true,
+                          "createdAt": "2025-01-15T10:20:30.000Z",
+                          "updatedAt": "2025-06-01T09:12:45.000Z"
+                        },
+                        {
+                          "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                          "firstName": "Jordan",
+                          "middleName": "A.",
+                          "lastName": "Lee",
+                          "dateOfBirth": "1987-11-02T00:00:00.000Z",
+                          "email": "jordan.lee@example.com",
+                          "userRole": "admin",
+                          "isActive": false,
+                          "createdAt": "2025-02-10T08:00:00.000Z",
+                          "updatedAt": "2025-05-20T13:45:00.000Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by ID",
+        "description": "Return a single user by UUID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User UUID",
+            "example": "6a4ddc5c-f531-4090-a79a-8d89b4b3cb23"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "6a4ddc5c-f531-4090-a79a-8d89b4b3cb23"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "example": "Doe"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": [
+                            "user"
+                          ]
+                        },
+                        "isConfirmed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-07-01T12:34:56Z"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "user": {
+                        "id": "6a4ddc5c-f531-4090-a79a-8d89b4b3cb23",
+                        "email": "john@example.com",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "roles": [
+                          "user"
+                        ],
+                        "isConfirmed": true,
+                        "createdAt": "2025-07-01T12:34:56Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid UUID",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalid": {
+                    "value": {
+                      "message": "Invalid payload",
+                      "issues": [
+                        {
+                          "message": "Invalid UUID format"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/set-role": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Set user role",
+        "description": "Update a user role by UUID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User UUID",
+            "example": "6a4ddc5c-f531-4090-a79a-8d89b4b3cb23"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Role updated"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "6a4ddc5c-f531-4090-a79a-8d89b4b3cb23"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john@example.com"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": [
+                            "admin"
+                          ]
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-09-07T12:00:00Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid UUID or body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "description": "Role to set",
+                    "enum": [
+                      "user",
+                      "admin"
+                    ]
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "examples": {
+                "setAdmin": {
+                  "value": {
+                    "role": "admin"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "securitySchemes": {
       "BearerAuth": {
