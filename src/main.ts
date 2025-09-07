@@ -8,7 +8,7 @@ const PORT: number = parseInt(process.env.PORT || '3000', 10);
 const NODE_ENV: string = process.env.NODE_ENV || 'development';
 
 const server = new App();
-const db = new DB();
+const db = DB.getInstance();
 const bootstrap = new Bootstrap(server, db);
 const globalHandlers = new GlobalHandlers();
 

@@ -11,15 +11,18 @@ export class UserRepository {
     }
 
     async createUser ( userData: schema.NewUser ) {
-        return await this.db.insert(schema.usersTable).values(userData).returning();
+        const result = await this.db.insert(schema.usersTable).values(userData).returning();
+        return result[0] || null;
     }
 
     async findById (id:string) {
-        return await this.db.select().from(schema.usersTable).where(eq(schema.usersTable.id,id));
+        const result = await this.db.select().from(schema.usersTable).where(eq(schema.usersTable.id,id));
+        return result[0] || null;
     }
 
     async findAll () {
-        return await this.db.select().from(schema.usersTable);
+        const result = await this.db.select().from(schema.usersTable);
+        return result;
     }
 
     async updateUser(id: string, updates: Partial<schema.NewUser>){
@@ -33,7 +36,7 @@ export class UserRepository {
         .where(eq(schema.usersTable.id, id))
         .returning();
 
-      return result[0];
+      return result[0] || null;
     } catch (error) {
       throw new Error(`Failed to update user: ${error}`);
     }

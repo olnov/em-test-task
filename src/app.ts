@@ -6,9 +6,10 @@ import helmet from 'helmet';
 import logger from '@config/logger';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import exampleRouter from '@routes/example.route';
+// import exampleRouter from '@routes/example.route';
 import 'dotenv/config';
 import http, { Server } from 'http';
+import registrationRouter from '@routes/registration.route';
 
 export class App {
   public app: Application;
@@ -71,7 +72,8 @@ export class App {
 
   // API Routes
   private initialiseRoutes() {
-    this.app.use('/api/example', exampleRouter);
+    // this.app.use('/api/example', exampleRouter);
+    this.app.use('/api/v1/register', registrationRouter);
   }
 
   public listen(port: number, callback?: () => void): void {

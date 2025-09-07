@@ -10,7 +10,7 @@ export class DB {
   private db: NodePgDatabase<typeof schema> | null = null;
   private readonly config: PoolConfig;
 
-  constructor () {
+  private constructor () {
     const DATABASE_URL = process.env.DATABASE_URL;
     if (!DATABASE_URL) {
       logger.error('DATABASE_URL is not set in env variables', { module: 'db' });
@@ -43,16 +43,14 @@ export class DB {
     try {
       this.pool = new Pool(this.config);
 
-      // Testing connection
       const isHealthy = await this.healthCheck();
       if (!isHealthy) {
         throw new Error('Database connection test failed');
       }
 
-      this.db = drizzle(this.pool, { schema });
+      this.db = drizzle(this.pool, { schema, logger: false });
       logger.info('Connected to the DB', {module: 'db'});
 
-      // Client error handling
       this.pool.on('error', (error)=> {
         logger.error(`Unexpected error on idle client: ${error.message}`, { module: 'db' })
       });
