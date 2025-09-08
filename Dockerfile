@@ -13,8 +13,12 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/src/scripts/swagger-output.json ./dist/src/scripts/swagger-output.json
+COPY --from=builder /app/src/scripts/start.sh ./scripts/start.sh
+
+RUN chmod +x ./scripts/start.sh
 
 RUN npm prune --omit=dev
 
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+CMD ["./scripts/start.sh"]
